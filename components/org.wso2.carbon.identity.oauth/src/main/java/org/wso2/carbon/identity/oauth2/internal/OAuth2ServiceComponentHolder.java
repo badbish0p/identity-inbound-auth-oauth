@@ -28,7 +28,11 @@ import org.wso2.carbon.identity.core.handler.HandlerComparator;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
 import org.wso2.carbon.identity.oauth.dto.ScopeDTO;
-import org.wso2.carbon.identity.oauth.par.core.ParAuthService;
+import org.wso2.carbon.identity.oauth.tokenprocessor.DefaultOAuth2RevocationProcessor;
+import org.wso2.carbon.identity.oauth.tokenprocessor.DefaultRefreshTokenGrantProcessor;
+import org.wso2.carbon.identity.oauth.tokenprocessor.OAuth2RevocationProcessor;
+import org.wso2.carbon.identity.oauth.tokenprocessor.RefreshTokenGrantProcessor;
+import org.wso2.carbon.identity.oauth2.OAuthAuthorizationRequestBuilder;
 import org.wso2.carbon.identity.oauth2.authz.validators.ResponseTypeRequestValidator;
 import org.wso2.carbon.identity.oauth2.bean.Scope;
 import org.wso2.carbon.identity.oauth2.client.authentication.OAuthClientAuthenticator;
@@ -61,7 +65,6 @@ public class OAuth2ServiceComponentHolder {
 
     private static OAuth2ServiceComponentHolder instance = new OAuth2ServiceComponentHolder();
     private static ApplicationManagementService applicationMgtService;
-    private static ParAuthService parAuthService;
     private static boolean pkceEnabled = false;
     private static boolean audienceEnabled = false;
     private static RegistryService registryService;
@@ -94,7 +97,10 @@ public class OAuth2ServiceComponentHolder {
     private static boolean restrictUnassignedScopes;
     private static ConfigurationContextService configurationContextService;
     private List<JWTAccessTokenClaimProvider> jwtAccessTokenClaimProviders = new ArrayList<>();
+    private final List<OAuthAuthorizationRequestBuilder> oAuthAuthorizationRequestBuilders = new ArrayList<>();
     private boolean isOrganizationManagementEnabled = false;
+    private RefreshTokenGrantProcessor refreshTokenGrantProcessor;
+    private OAuth2RevocationProcessor revocationProcessor;
 
     private OAuth2ServiceComponentHolder() {
 
@@ -123,26 +129,6 @@ public class OAuth2ServiceComponentHolder {
     public static void setApplicationMgtService(ApplicationManagementService applicationMgtService) {
 
         OAuth2ServiceComponentHolder.applicationMgtService = applicationMgtService;
-    }
-
-    /**
-     * Get ParAuth service.
-     *
-     * @return Instance of ParAuthService.
-     */
-    public static ParAuthService getParAuthService() {
-
-        return parAuthService;
-    }
-
-    /**
-     * Set parAuth service.
-     *
-     * @param parAuthService Instance of ParAuthService.
-     */
-    public static void setParAuthService(ParAuthService parAuthService) {
-
-        OAuth2ServiceComponentHolder.parAuthService = parAuthService;
     }
 
     @Deprecated
@@ -497,6 +483,52 @@ public class OAuth2ServiceComponentHolder {
         OAuth2ServiceComponentHolder.consentServerConfigsManagementService = consentServerConfigsManagementService;
     }
 
+    /**
+     * Get Refresh Token Grant Processor.
+     *
+     * @return RefreshTokenGrantProcessor  Refresh Token Grant Processor.
+     */
+    public RefreshTokenGrantProcessor getRefreshTokenGrantProcessor() {
+
+        if (refreshTokenGrantProcessor == null) {
+            refreshTokenGrantProcessor = new DefaultRefreshTokenGrantProcessor();
+        }
+        return refreshTokenGrantProcessor;
+    }
+
+    /**
+     * Set Refresh Token Grant Processor.
+     *
+     * @param refreshTokenGrantProcessor Refresh Token Grant Processor.
+     */
+    public void setRefreshTokenGrantProcessor(RefreshTokenGrantProcessor refreshTokenGrantProcessor) {
+
+        this.refreshTokenGrantProcessor = refreshTokenGrantProcessor;
+    }
+
+    /**
+     * Get Revocation Processor.
+     *
+     * @return Revocation Processor.
+     */
+    public OAuth2RevocationProcessor getRevocationProcessor() {
+
+        if (revocationProcessor == null) {
+            revocationProcessor = new DefaultOAuth2RevocationProcessor();
+        }
+        return revocationProcessor;
+    }
+
+    /**
+     * Set Revocation Processor.
+     *
+     * @param revocationProcessor Revocation Processor.
+     */
+    public void setRevocationProcessor(OAuth2RevocationProcessor revocationProcessor) {
+
+        this.revocationProcessor = revocationProcessor;
+    }
+
     public static boolean isRestrictUnassignedScopes() {
 
         return restrictUnassignedScopes;
@@ -649,5 +681,35 @@ public class OAuth2ServiceComponentHolder {
             return getDefaultResponseModeProvider();
         }
         return responseModeProvider;
+    }
+
+    /**
+     * Get the list of oauth authorization request builder implementations available.
+     *
+     * @return List<OAuthAuthorizationRequestBuilder> returns a list ot request builders.
+     */
+    public List<OAuthAuthorizationRequestBuilder> getAuthorizationRequestBuilders() {
+
+        return oAuthAuthorizationRequestBuilders;
+    }
+
+    /**
+     * Add request builder implementation.
+     *
+     * @param oAuthAuthorizationRequestBuilder Request builder implementation.
+     */
+    public void addAuthorizationRequestBuilder(OAuthAuthorizationRequestBuilder oAuthAuthorizationRequestBuilder) {
+
+        oAuthAuthorizationRequestBuilders.add(oAuthAuthorizationRequestBuilder);
+    }
+
+    /**
+     * Remove request builder implementation.
+     *
+     * @param oAuthAuthorizationRequestBuilder Request builder implementation.
+     */
+    public void removeAuthorizationRequestBuilder(OAuthAuthorizationRequestBuilder oAuthAuthorizationRequestBuilder) {
+
+        oAuthAuthorizationRequestBuilders.remove(oAuthAuthorizationRequestBuilder);
     }
 }

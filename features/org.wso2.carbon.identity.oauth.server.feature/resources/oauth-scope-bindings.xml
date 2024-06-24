@@ -1021,4 +1021,44 @@
             <Permission>/permission/admin/manage/identity/user/idv/claim/verify</Permission>
         </Permissions>
     </Scope>
+    <Scope name="internal_organization_create" displayName="Create Organization">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/organizationmgt/create</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_organization_view" displayName="View Organization">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/organizationmgt/view</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_organization_delete" displayName="Delete Organization">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/organizationmgt/delete</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_organization_update" displayName="Update Organization">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/organizationmgt/update</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_api_resource_view" displayName="View API Resource">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/apiresourcemgt/view</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_api_resource_create" displayName="Create API Resource">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/apiresourcemgt/create</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_api_resource_update" displayName="Update API Resource">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/apiresourcemgt/update</Permission>
+        </Permissions>
+    </Scope>
+    <Scope name="internal_api_resource_delete" displayName="Delete API Resource">
+        <Permissions>
+            <Permission>/permission/admin/manage/identity/apiresourcemgt/delete</Permission>
+        </Permissions>
+    </Scope>
 </Scopes>
